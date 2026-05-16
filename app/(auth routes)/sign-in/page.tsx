@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { login, LoginRequest } from '@/lib/api';
+import { login, LoginRequest } from '@/lib/api/clientApi';
 import { AxiosError } from 'axios';
 
 import css from './SignInPage.module.css';
@@ -17,6 +17,7 @@ const SignIn = () => {
       const res = await login(formValues);
       if (res) {
         router.push('/profile');
+        router.refresh();
       } else {
         setError('Invalid email or password');
       }

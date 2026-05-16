@@ -41,7 +41,7 @@ export const getMe = async () => {
   return res.data;
 };
 
-export const updateMe = async (data: { username: string }) => {
+export const updateMe = async (data: { name: string }) => {
   const res = await api.patch<User>('/users/me', data);
   return res.data;
 };
