@@ -1,30 +1,31 @@
 import Link from 'next/link';
-import css from './Header.module.css';
 import AuthNavigation from '../AuthNavigation/AuthNavigation';
 
-export default function Header() {
+import css from './Header.module.css';
+
+type Props = {
+  isAuth: boolean;
+  email?: string;
+};
+
+export default function Header({ isAuth, email }: Props) {
   return (
     <header className={css.header}>
-      <Link href="/" aria-label="Home" className={css.headerLink}>
-        NoteHub
-      </Link>
-
-      <nav aria-label="Main Navigation">
+      <nav>
         <ul className={css.navigation}>
-          <li>
+          <li className={css.navigationItem}>
             <Link href="/" className={css.navigationLink}>
               Home
             </Link>
           </li>
-          <li>
-            <Link href="/notes/filter/all" className={css.navigationLink}>
+
+          <li className={css.navigationItem}>
+            <Link href="/notes" className={css.navigationLink}>
               Notes
             </Link>
           </li>
-        </ul>
 
-        <ul className={css.navigation}>
-          <AuthNavigation />
+          <AuthNavigation isAuth={isAuth} email={email} />
         </ul>
       </nav>
     </header>
