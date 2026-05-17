@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL + '/api';
+const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 export const checkSession = async () => {
   const cookieStore = await cookies();
@@ -10,7 +10,7 @@ export const checkSession = async () => {
     .map(c => `${c.name}=${c.value}`)
     .join('; ');
 
-  const res = await fetch(`${baseURL}/auth/session`, {
+  const res = await fetch(`${baseURL}/api/auth/session`, {
     headers: {
       Cookie: cookieHeader,
     },
