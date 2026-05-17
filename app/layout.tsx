@@ -39,7 +39,10 @@ export default async function RootLayout({
       <body className={roboto.variable}>
         <TanStackProvider>
           <AuthProvider>
-            <Header isAuth={session.success} email={session.user?.email} />
+            <Header
+              isAuth={session.data.success}
+              email={session.data.user?.email}
+            />
             {children}
             {modal}
             <Footer />

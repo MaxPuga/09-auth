@@ -1,27 +1,19 @@
 import { create } from 'zustand';
-import type { User } from '@/types/user';
 
-interface AuthStore {
+import type { User } from '../../types/user';
+
+interface AuthState {
   user: User | null;
-  isAuthenticated: boolean;
 
   setUser: (user: User) => void;
-  clearAuth: () => void;
+
+  clearUser: () => void;
 }
 
-export const useAuthStore = create<AuthStore>()(set => ({
+export const useAuthStore = create<AuthState>(set => ({
   user: null,
-  isAuthenticated: false,
 
-  setUser: user =>
-    set({
-      user,
-      isAuthenticated: true,
-    }),
+  setUser: user => set({ user }),
 
-  clearAuth: () =>
-    set({
-      user: null,
-      isAuthenticated: false,
-    }),
+  clearUser: () => set({ user: null }),
 }));

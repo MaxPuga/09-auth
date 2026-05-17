@@ -1,42 +1,9 @@
 import { cookies } from 'next/headers';
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL;
+import { api } from './api';
 
-export const getMe = async () => {
-  const cookieStore = await cookies();
-
-  const cookieHeader = cookieStore
-    .getAll()
-    .map(c => `${c.name}=${c.value}`)
-    .join('; ');
-
-  const res = await fetch(`${baseURL}/api/users/me`, {
-    headers: {
-      Cookie: cookieHeader,
-    },
-    cache: 'no-store',
-  });
-
-  return res.json();
-};
-
-export const checkSession = async () => {
-  const cookieStore = await cookies();
-
-  const cookieHeader = cookieStore
-    .getAll()
-    .map(c => `${c.name}=${c.value}`)
-    .join('; ');
-
-  const res = await fetch(`${baseURL}/api/auth/session`, {
-    headers: {
-      Cookie: cookieHeader,
-    },
-    cache: 'no-store',
-  });
-
-  return res.json();
-};
+import type { Note } from '@/types/note';
+import type { User } from '@/types/user';
 
 interface FetchNotesParams {
   page?: number;
@@ -45,51 +12,63 @@ interface FetchNotesParams {
   tag?: string;
 }
 
-export const fetchNotes = async (params: FetchNotesParams) => {
+const getCookieHeader = async () => {
   const cookieStore = await cookies();
 
-  const cookieHeader = cookieStore
+  return cookieStore
     .getAll()
     .map(c => `${c.name}=${c.value}`)
     .join('; ');
+};
 
-  const query = new URLSearchParams();
+export const checkSession = async () => {
+  const cookieHeader = await getCookieHeader();
 
-  if (params.page) query.append('page', String(params.page));
-  if (params.perPage) query.append('perPage', String(params.perPage));
-  if (params.search) query.append('search', params.search);
-  if (params.tag) query.append('tag', params.tag);
-
-  const res = await fetch(`${baseURL}/notes?${query.toString()}`, {
+  return api.get('/auth/session', {
     headers: {
       Cookie: cookieHeader,
     },
-    cache: 'no-store',
   });
-
-  return res.json();
 };
 
-// import { cookies } from 'next/headers';
+export const getMe = async (): Promise<User> => {
+  const cookieHeader = await getCookieHeader();
 
-// const baseURL = process.env.NEXT_PUBLIC_API_URL + '/api';
+  const res = await api.get<User>('/users/me', {
+    headers: {
+      Cookie: cookieHeader,
+    },
+  });
 
-// export const checkSession = async () => {
-//   const cookieStore = await cookies();
+  return res.data;
+};
 
-//   const cookieHeader = cookieStore
-//     .getAll()
-//     .map(c => `${c.name}=${c.value}`)
-//     .join('; ');
+export const fetchNotes = async (
+  params: FetchNotesParams
+): Promise<{
+  notes: Note[];
+  totalPages: number;
+}> => {
+  const cookieHeader = await getCookieHeader();
 
-//   const res = await fetch(`${baseURL}/auth/session`, {
-//     method: 'GET',
-//     headers: {
-//       Cookie: cookieHeader,
-//     },
-//     cache: 'no-store',
-//     credentials: 'include',
-//   });
+  const res = await api.get('/notes', {
+    params,
+    headers: {
+      Cookie: cookieHeader,
+    },
+  });
 
-//   return res.json();
-// };
+  return res.data;
+};
+
+export const fetchNoteById = async (id: string): Promise<Note> => {
+  const cookieHeader = await getCookieHeader();
+
+  const res = await api.get<Note>(`/notes/${id}`, {
+    headers: {
+      Cookie: cookieHeader,
+    },
+  });
+
+  return res.data;
+};

@@ -2,22 +2,29 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { login, LoginRequest } from '@/lib/api/clientApi';
+import { login, LoginRequest, getMe } from '@/lib/api/clientApi';
 import { AxiosError } from 'axios';
+import { useAuthStore } from '@/lib/store/authStore';
 
 import css from './SignInPage.module.css';
 
 const SignIn = () => {
   const router = useRouter();
+  const setUser = useAuthStore(state => state.setUser);
   const [error, setError] = useState('');
 
   const handleSubmit = async (formData: FormData) => {
     try {
       const formValues = Object.fromEntries(formData) as LoginRequest;
       const res = await login(formValues);
+
       if (res) {
-        router.push('/profile');
+        const user = await getMe();
+
+        setUser(user);
+
         router.refresh();
+        router.push('/profile');
       } else {
         setError('Invalid email or password');
       }

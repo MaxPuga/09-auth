@@ -8,11 +8,14 @@ import css from './EditProfilePage.module.css';
 
 import { getMe, updateMe } from '@/lib/api/clientApi';
 import type { User } from '@/types/user';
+import { useAuthStore } from '@/lib/store/authStore';
 
 export default function EditProfilePage() {
   const router = useRouter();
 
-  const [user, setUser] = useState<User | null>(null);
+  const setUser = useAuthStore(state => state.setUser);
+
+  const [user, setCurrentUser] = useState<User | null>(null);
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -22,8 +25,8 @@ export default function EditProfilePage() {
       try {
         const data = await getMe();
 
-        setUser(data);
-        setUsername(data.name || '');
+        setCurrentUser(data);
+        setUsername(data.username || '');
       } catch {
         setError('Failed to load user');
       } finally {
@@ -38,9 +41,11 @@ export default function EditProfilePage() {
     e.preventDefault();
 
     try {
-      await updateMe({
+      const updatedUser = await updateMe({
         username,
       });
+
+      setUser(updatedUser);
 
       router.push('/profile');
       router.refresh();
