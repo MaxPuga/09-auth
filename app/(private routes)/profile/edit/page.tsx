@@ -7,12 +7,7 @@ import Image from 'next/image';
 import css from './EditProfilePage.module.css';
 
 import { getMe, updateMe } from '@/lib/api/clientApi';
-
-interface User {
-  name: string;
-  email: string;
-  avatar?: string;
-}
+import type { User } from '@/types/user';
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -28,7 +23,7 @@ export default function EditProfilePage() {
         const data = await getMe();
 
         setUser(data);
-        setUsername(data.name);
+        setUsername(data.name || '');
       } catch {
         setError('Failed to load user');
       } finally {

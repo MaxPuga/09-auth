@@ -1,12 +1,17 @@
 import css from './ProfilePage.module.css';
 import type { Metadata } from 'next';
+import Image from 'next/image';
+
+import { getMe } from '@/lib/api/serverApi';
 
 export const metadata: Metadata = {
   title: 'Profile',
   description: 'User profile page',
 };
 
-export default function ProfilePage() {
+export default async function ProfilePage() {
+  const user = await getMe();
+
   return (
     <main className={css.mainContent}>
       <div className={css.profileCard}>
@@ -19,8 +24,11 @@ export default function ProfilePage() {
         </div>
 
         <div className={css.avatarWrapper}>
-          <img
-            src="https://ac.goit.global/fullstack/react/default-avatar.jpg"
+          <Image
+            src={
+              user.avatar ||
+              'https://ac.goit.global/fullstack/react/default-avatar.jpg'
+            }
             alt="User Avatar"
             width={120}
             height={120}
@@ -29,8 +37,8 @@ export default function ProfilePage() {
         </div>
 
         <div className={css.profileInfo}>
-          <p>Username: your_username</p>
-          <p>Email: your_email@example.com</p>
+          <p>Username: {user.username}</p>
+          <p>Email: {user.email}</p>
         </div>
       </div>
     </main>
