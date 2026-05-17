@@ -44,7 +44,7 @@ export default function EditProfilePage() {
 
     try {
       await updateMe({
-        name: username,
+        username,
       });
 
       router.push('/profile');
