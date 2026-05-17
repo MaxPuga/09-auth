@@ -5,7 +5,7 @@ export default function NotesLayout({
 }: {
   children: React.ReactNode;
   modal?: React.ReactNode;
-  sidebar: React.ReactNode;
+  sidebar?: React.ReactNode;
 }) {
   return (
     <>
