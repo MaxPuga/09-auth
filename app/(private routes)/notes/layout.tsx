@@ -9,9 +9,9 @@ export default function NotesLayout({
 }) {
   return (
     <>
+      {sidebar}
       {children}
       {modal}
-      {sidebar}
     </>
   );
 }
