@@ -8,9 +8,7 @@ export default async function PrivateLayout({
 }) {
   const session = await checkSession();
 
-  console.log(session);
-
-  if (!session?.success) {
+  if (!session.data.success) {
     redirect('/sign-in');
   }
 
