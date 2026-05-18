@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-
+import { useAuthStore } from '@/lib/store/authStore';
 import { logout } from '@/lib/api/clientApi';
 
 import css from './AuthNavigation.module.css';
@@ -14,9 +14,12 @@ type Props = {
 
 export default function AuthNavigation({ isAuth, email }: Props) {
   const router = useRouter();
+  const clearUser = useAuthStore(state => state.clearUser);
 
   const handleLogout = async () => {
     await logout();
+
+    clearUser();
 
     router.push('/sign-in');
     router.refresh();
